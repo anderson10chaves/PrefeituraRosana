@@ -4,18 +4,22 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @SequenceGenerator(name = "seq_pessoa", sequenceName = "seq_pessoa", initialValue = 1, allocationSize = 1)
-public class Pessoa implements Serializable {
+public abstract class Pessoa implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -30,7 +34,9 @@ public class Pessoa implements Serializable {
 	
 	private String telefone;
 	
-	private String tipoPessoa;
+	@ManyToOne(targetEntity = Pessoa.class)
+	@JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
+	private Pessoa pessoa;
 
 	public Long getId() {
 		return id;
@@ -64,12 +70,12 @@ public class Pessoa implements Serializable {
 		this.telefone = telefone;
 	}
 
-	public String getTipoPessoa() {
-		return tipoPessoa;
+	public Pessoa getPessoa() {
+		return pessoa;
 	}
 
-	public void setTipoPessoa(String tipoPessoa) {
-		this.tipoPessoa = tipoPessoa;
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
 	}
 
 	@Override
